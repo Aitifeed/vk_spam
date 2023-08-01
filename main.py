@@ -27,6 +27,7 @@ while True:
 			if event.user_id == admin_id:
 				text = event.text
 				if text == 'start' or text == 'Главное меню':
+					#Создаем главные кнопки
 					keyboard= VkKeyboard()
 					keyboard.add_button('Начать работу',VkKeyboardColor.NEGATIVE)	
 					keyboard.add_button('Активировать/деактивировать группу',VkKeyboardColor.NEGATIVE)
@@ -48,6 +49,7 @@ while True:
 					send_message(event.user_id,'Привет я твой спам бот,что ты хочешь сделать?',keyboard)
 
 				if text=='Активировать/деактивировать группу':
+					#Кнопка отвечает за активацию или деактивацию группы которая будет работать для получения новых юзеров и отсылки им спам текста.
 					keyboard= VkKeyboard()
 					keyboard.add_button('Главное меню',VkKeyboardColor.PRIMARY)
 
@@ -57,6 +59,7 @@ while True:
 					if len(groups['id'])==0:
 						send_message(event.user_id,'У вас нет ни одной загруженной группы!')
 					else:
+						#Получаем статуст активированых или деактивированных групп.
 						for i in groups['id']:
 							if groups['id'][i]['status']==False:
 								send_message(event.user_id,'id-'+str(i)+',группа-'+groups['id'][i]['name']+',статус деактивированна!')
@@ -95,9 +98,11 @@ while True:
 											if id_group not in groups['id']:
 												send_message(event.user_id,'Такого айди нет!\nПожалуйста внимательно посмотрите на id в списке групп и отправьте правильный id!')
 											else:
-												status=db.set_status(id_group)
+												#Меняем статус группы в бд и отправляем сообещние о статусе группы
+												db.change_status(id_group)
 												name_group=groups['id'][id_group]['name']
 												data_group=db.get_groups()
+												status=db.get_status(id_group)
 
 												if status==True:
 													send_message(event.user_id,'Группа - '+name_group+',успешно активированна!\nМожете дальше отправлять id,чтобы активировать/деактивировать группы или нажать "Главное меню",чтобы прекратить процедуру.')
@@ -109,6 +114,7 @@ while True:
 											send_message(event.user_id,'Неправильный формат айди,нужно отправлять только цифры без символов!')
 				
 				if text=='Посмотреть данные спам аккаунтов':
+					#Выводит логин и пароль загруженых спам аккаунтов.
 					db=Database(host,user,password,name_db)
 					accounts=db.get_spam_account()
 					
@@ -346,18 +352,19 @@ while True:
 									break
 
 								else:
-									# try:
-									group=vk_api.VkApi(token=event.text)
-									group=group.get_api()
-									data=group.groups.getById()
-									db=Database(host,user,password,name_db)
-									db.add_group_spam(data[0]['id'],data[0]['name'],event.text)
+									try:
+										#Проверяем валидность токена и загружаем токен группы в бд
+										group=vk_api.VkApi(token=event.text)
+										group=group.get_api()
+										data=group.groups.getById()
+										db=Database(host,user,password,name_db)
+										db.add_group_spam(data[0]['id'],data[0]['name'],event.text)
 
-									send_message(event.user_id,'Группа:'+data[0]['name']+' успешно загружена!\n\nМожете дальше отправлять токен другой группы,чтобы ее загрузить или нажать "Главное меню",чтобы отменить процедуру загрузки групп.')
+										send_message(event.user_id,'Группа:'+data[0]['name']+' успешно загружена!\n\nМожете дальше отправлять токен другой группы,чтобы ее загрузить или нажать "Главное меню",чтобы отменить процедуру загрузки групп.')
 
-									# except Exception as error:
-									# 	print(error)
-									# 	send_message(event.user_id,'Неправильный токен!Возможно вы допустили ошибку добавив какой-нибудь символ или проблел.\n\nПожалуйста отправьте коректный токен!\n\nЧтобы прекратить процедуру загрузки групп,нажмите на кнопку "Главное меню".')
+									except Exception as error:
+									 	print(error)
+									 	send_message(event.user_id,'Неправильный токен!Возможно вы допустили ошибку добавив какой-нибудь символ или проблел.\n\nПожалуйста отправьте коректный токен!\n\nЧтобы прекратить процедуру загрузки групп,нажмите на кнопку "Главное меню".')
 										
 				if text=='Загрузить спам аккаунт':
 					keyboard= VkKeyboard()
@@ -391,6 +398,7 @@ while True:
 									log=data.find('log')
 									pas=data.find('pass')
 									token=data.find('token')
+									
 									if log==-1 or pas==-1 or token==-1:
 										keyboard= VkKeyboard()
 										keyboard.add_button('Начать спам',VkKeyboardColor.NEGATIVE)	
@@ -418,11 +426,14 @@ while True:
 									token=data[token+6:]
 
 									try:
+										#Пробуем войти в спам аккаунт,если все ок загружаем акк в бд и переносим пользователя в главное меню,если нет отправялем ошибку того почему не можем загрузить спам аккаунт 
 										vk = vk_api.VkApi(token=token)
 										vk = vk.get_api()
 										vk.account.getInfo()
+										
 										db=Database(host,user,password,name_db)
 										db.add_spam_account(log,pas,token)
+										
 										keyboard= VkKeyboard()
 										keyboard.add_button('Начать спам',VkKeyboardColor.NEGATIVE)	
 										keyboard.add_line()
@@ -486,8 +497,10 @@ while True:
 
 								
 				if text=='Проверить статус спам аккаунтов':
+					#Просмотр в каком состоянии спам аккаунт,если аккаунт в бане то он автоматичеки удалеться из бд
 					keyboard= VkKeyboard()
 					keyboard.add_button('Главное меню',VkKeyboardColor.PRIMARY)
+					
 					db=Database(host,user,password,name_db)
 					accounts=db.get_spam_account()
 					
@@ -572,6 +585,7 @@ while True:
 										
 
 				if text=='Начать работу':
+					#Считываем активированные группы для работы и запускам функцию spam для этих групп через потоки
 					keyboard= VkKeyboard()
 					keyboard.add_button('Главное меню',VkKeyboardColor.PRIMARY)
 					db=Database(host,user,password,name_db)

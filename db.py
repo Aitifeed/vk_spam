@@ -47,11 +47,11 @@ class Database:
 							"token 		TEXT,"
 							"spam_text 	TEXT,"
 							"status 	BOOLEAN DEFAULT False);")
-		
+
 		cls.connect.commit()
 
 
-	def set_status(self,id):
+	def change_status(self,id):
 		self.cursor.execute('SELECT status FROM group_spam WHERE id=%s',(id,))
 		status=self.cursor.fetchall()
 		
@@ -59,12 +59,10 @@ class Database:
 			self.cursor.execute('UPDATE group_spam SET status=%s WHERE id=%s',(False,id,))
 			self.connect.commit()
 
-			return False
 		else:
 			self.cursor.execute('UPDATE group_spam SET status=%s WHERE id=%s',(True,id,))
 			self.connect.commit()
 
-			return True
 			
 	def get_status(self,id):
 		self.cursor.execute('SELECT status FROM group_spam WHERE id=%s',(id,))
