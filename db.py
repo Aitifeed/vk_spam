@@ -50,7 +50,6 @@ class Database:
 
 		cls.connect.commit()
 
-
 	def change_status(self,id):
 		self.cursor.execute('SELECT status FROM group_spam WHERE id=%s',(id,))
 		status=self.cursor.fetchall()

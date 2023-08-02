@@ -2,6 +2,19 @@ import vk_api
 from config import admin_id,host,user,name_db,password
 from vk_api.bot_longpoll import VkBotLongPoll,VkBotEventType
 
+def send_message(group_api,user_id,message,keyboard=None):
+	post={
+		"user_id":user_id,
+		"message":message,
+		"random_id":0,
+	}
+	
+	if keyboard!=None:
+		post['keyboard']=keyboard.get_keyboard()
+
+
+	group_api.method("messages.send",post)
+
 def spam(id,token,group_id):
 	from db import Database
 	
@@ -12,8 +25,8 @@ def spam(id,token,group_id):
 		#Ловим нового юзера которому будем отсылать спам
 		for event in VkBotLongPoll(group_api,group_id).listen():
 			status=db.get_status(id)
+			#Если группа деактивирована выходим из потока.
 			if status==False:
-				print('return')
 				return
 
 			if event.type == VkBotEventType.GROUP_JOIN:
@@ -21,7 +34,6 @@ def spam(id,token,group_id):
 				id_acc=db.get_all_id_sa()
 				if len(id_acc)==0:
 					continue
-					print('Нету айди')
 				#Запускаем цикл по всем айди наших спам аккаунтов и пытаемся отослать новому юзеру спам сообщение 
 				for i in id_acc:
 					#Пытаемся отослать новому юзеру спам,если это удалось завершаем цикл,если нет проходимся по всем спам акаунтом пока это не удасться
@@ -36,7 +48,7 @@ def spam(id,token,group_id):
 						break
 					except Exception as error:
 						if 'Captcha needed' in str(error):
-							#Если вылезла капчы,записываем ее в бд чтобы пользователь потом мог ее снять
+							#Если вылезла капча,записываем ее в бд чтобы пользователь потом мог ее снять
 							db.set_captcha(data_acc['id'],True)
 
 						if "Can't send messages for users without permission" in str(error):
@@ -45,6 +57,3 @@ def spam(id,token,group_id):
 						if "Can't send messages to this user due to their privacy settings" in str(error):
 							break
 						continue
-				'''
-				Здесь будет код в случае если не смогли отправить сообщение по какой то причине!
-				'''
