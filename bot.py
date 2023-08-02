@@ -5,19 +5,6 @@ from db import Database
 from threading import Thread
 from action import spam,send_message
  
-def send_message(user_id,message,keyboard=None):
-	post={
-		"user_id":user_id,
-		"message":message,
-		"random_id":0,
-	}
-	
-	if keyboard!=None:
-		post['keyboard']=keyboard.get_keyboard()
-
-
-	group_api.method("messages.send",post)
-
 def bot_longpoll(group_api):
 	try:
 		while True:
