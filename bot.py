@@ -6,7 +6,7 @@ from db import Database
 from button_callback import ButtonAction
 from threading import Thread
 
-def bot_longpoll(group_api,config):
+def bot_longpoll(group_api, config):
 	try:
 		db = Database(config['host'], config['user'], config['password'], config['name_db'])
 		action = ButtonAction(group_api, config)
@@ -18,32 +18,32 @@ def bot_longpoll(group_api,config):
 						if text == 'start' or text == 'Главное меню':
 							#Создаем главные кнопки
 							action.send_message(group_api,event.user_id,
-									'Привет я твой спам бот,что ты хочешь сделать?',
+									    'Привет я твой спам бот,что ты хочешь сделать?',
 									    keyboards())
 
 						if text == 'Активировать/деактивировать группу':
 							#Кнопка отвечает за активацию или деактивацию группы которая будет работать для получения новых юзеров и отсылки им спам текста.
 							keyboard= VkKeyboard()
-							keyboard.add_button('Главное меню',VkKeyboardColor.PRIMARY)
+							keyboard.add_button('Главное меню', VkKeyboardColor.PRIMARY)
 
 							groups=db.get_groups()
 
 							if len(groups['id']) == 0:
-								action.send_message(group_api,event.user_id,
+								action.send_message(group_api, event.user_id,
 										'У вас нет ни одной загруженной группы!')
 							else:
 								#Получаем статуст активированых или деактивированных групп.
 								for i in groups['id']:
 									if groups['id'][i]['status'] == False:
 										action.send_message(group_api, event.user_id,
-												'id-' + str(i) + ',группа-' + groups['id'][i]['name'] + ',статус деактивированна!')
+												    'id-' + str(i) + ',группа-' + groups['id'][i]['name'] + ',статус деактивированна!')
 									else:
 										action.send_message(group_api, event.user_id, 
-												'id-'+str(i)+',группа-'+groups['id'][i]['name']+',статус активированна!')
+												    'id-'+str(i)+',группа-'+groups['id'][i]['name']+',статус активированна!')
 
 								action.send_message(group_api, event.user_id,
-										'Отправьте id группы,чтобы активировать/деактивировать её!',
-										keyboard)				
+										    'Отправьте id группы,чтобы активировать/деактивировать её!',
+										    keyboard)				
 								action.activate_deactivate(groups)
 
 						if text == 'Посмотреть данные спам аккаунтов':
@@ -52,11 +52,11 @@ def bot_longpoll(group_api,config):
 						
 							if len(accounts['id']) == 0:
 								action.send_message(group_api, event.user_id,
-											'У вас нет ни одного спам аккаунта!')
+										    'У вас нет ни одного спам аккаунта!')
 							else:
 								for id_acc in accounts['id']:
 									action.send_message(group_api, event.user_id,
-												f'логин:%s,пароль:%s'% (accounts['id'][id_acc]['login'],accounts['id'][id_acc]['password']))
+											    f'логин:%s,пароль:%s'% (accounts['id'][id_acc]['login'],accounts['id'][id_acc]['password']))
 
 						if text == 'Удалить группу':
 							keyboard = VkKeyboard()
@@ -66,15 +66,15 @@ def bot_longpoll(group_api,config):
 
 							if len(groups['id']) == 0:
 								action.send_message(group_api, event.user_id,
-										'У вас нет ни одной группы,чтобы удалить её.\nСначала загрузите группу!')
+										    'У вас нет ни одной группы,чтобы удалить её.\nСначала загрузите группу!')
 							else:
 								for i in groups['id']:
 									action.send_message(group_api, event.user_id,
-											'id-' + str(i) + ', ' + groups['id'][i]['name'])
+											    'id-' + str(i) + ', ' + groups['id'][i]['name'])
 
 								action.send_message(group_api, event.user_id,
-										'Отправь мне id группы из списка которую будем удалять.\nОтправлять нужно только цифры без других символов!',
-										keyboard)
+										    'Отправь мне id группы из списка которую будем удалять.\nОтправлять нужно только цифры без других символов!',
+										    keyboard)
 								action.delete_group(groups)
 
 						if text == 'Посмотреть спам текст групп':
@@ -85,15 +85,15 @@ def bot_longpoll(group_api,config):
 
 							if len(groups['id']) == 0:
 								action.send_message(group_api, event.user_id,
-										'У вас нет ни одной группы,чтобы посмотреть спам текст.\nСначала загрузите группу.')
+										    'У вас нет ни одной группы,чтобы посмотреть спам текст.\nСначала загрузите группу.')
 							else:
 								for i in groups['id']:
 									action.send_message(group_api, event.user_id,
-											'id-' + str(i) + ', ' + groups['id'][i]['name'])
+											    'id-' + str(i) + ', ' + groups['id'][i]['name'])
 
 								action.send_message(group_api, event.user_id,
-										'Отправь мне id группы из списка для которой будем смотреть спам текст.\nОтправлять нужно только цифры без других символов!',
-										keyboard)
+										    'Отправь мне id группы из списка для которой будем смотреть спам текст.\nОтправлять нужно только цифры без других символов!',
+										    keyboard)
 								action.see_spam_text(groups)
 											
 						if text == 'Добавить или обновить спам текст':
@@ -104,15 +104,15 @@ def bot_longpoll(group_api,config):
 					
 							if len(groups['id']) == 0:
 								action.send_message(group_api, event.user_id,
-											'У вас нет ни одной группы,чтобы добавить/обновить спам текст.Сначала загрузите группу.')
+										    'У вас нет ни одной группы,чтобы добавить/обновить спам текст.Сначала загрузите группу.')
 							else:
 								for i in groups['id']:
 									action.send_message(group_api, event.user_id,
-											'id-' + str(i) + ', ' +groups['id'][i]['name'])
+											    'id-' + str(i) + ', ' +groups['id'][i]['name'])
 
 								action.send_message(group_api, event.user_id,
-										'Отправь мне id группы из списка для которой будем добавлять/обновлять спам текст.\nОтправлять нужно только цифры без других символов!',
-										keyboard)
+										    'Отправь мне id группы из списка для которой будем добавлять/обновлять спам текст.\nОтправлять нужно только цифры без других символов!',
+										    keyboard)
 								action.add_update_spam_text(groups)
 
 						if text == 'Загрузить группу':
@@ -120,15 +120,15 @@ def bot_longpoll(group_api,config):
 							keyboard.add_button('Главное меню', VkKeyboardColor.PRIMARY)
 							
 							action.send_message(group_api, event.user_id,
-									'Отправь мне токен группы.',keyboard)
+									    'Отправь мне токен группы.',keyboard)
 							action.load_group()
 											
 						if text == 'Загрузить спам аккаунт':
 							keyboard = VkKeyboard()
 							keyboard.add_button('Главное меню', VkKeyboardColor.PRIMARY)
 							action.send_message(group_api, event.user_id,
-										'Отправь мне логин,пароль и токен аккаунта без пробелов в формате - log:логин,pass:пароль,token:токен.\n\nЧтобы прекратить процедуру нажмите "Главное меню".',
-										keyboard)
+									    'Отправь мне логин,пароль и токен аккаунта без пробелов в формате - log:логин,pass:пароль,token:токен.\n\nЧтобы прекратить процедуру нажмите "Главное меню".',
+									    keyboard)
 							action.load_spam_ac()
 
 									
@@ -141,7 +141,7 @@ def bot_longpoll(group_api,config):
 						
 							if len(accounts['id']) == 0:
 								action.send_message(group_api, event.user_id,
-													'У вас нет ни одного спам аккаунта!Сначала загрузите их.')
+										    'У вас нет ни одного спам аккаунта!Сначала загрузите их.')
 							else:
 								for id_acc in accounts['id']:
 									try:
@@ -149,14 +149,14 @@ def bot_longpoll(group_api,config):
 										vk = vk.get_api()
 										vk.account.getInfo()
 										action.send_message(group_api, event.user_id,
-													'id-'+str(id_acc)+',логин:%s,пароль:%s.Состояние-ЗДОРОВ!'% (accounts['id'][id_acc]['login'],accounts['id'][id_acc]['password'])
+												    'id-'+str(id_acc)+',логин:%s,пароль:%s.Состояние-ЗДОРОВ!'% (accounts['id'][id_acc]['login'],accounts['id'][id_acc]['password'])
 										)
 									except Exception as error:
 										print(error)
 										if 'invalid access_token' in str(error):
 									
 											action.send_message(group_api, event.user_id,
-													'id-'+str(id_acc)+',логин:%s,пароль:%s.Состояние-НЕПРАВИЛЬНЫЙ ТОКЕН!'% (accounts['id'][id_acc]['login'],accounts['id'][id_acc]['password'])
+													    'id-'+str(id_acc)+',логин:%s,пароль:%s.Состояние-НЕПРАВИЛЬНЫЙ ТОКЕН!'% (accounts['id'][id_acc]['login'],accounts['id'][id_acc]['password'])
 											)
 							
 										if 'user is blocked' in str(error):
@@ -164,7 +164,7 @@ def bot_longpoll(group_api,config):
 
 										if 'Captcha needed' in str(error):
 											action.send_message(group_api, event.user_id,
-														'id-'+str(id_acc)+',логин:%s,пароль:%s.Состояние-НУЖНО ВВЕСТИ КАПЧУ!'% (accounts['id'][id_acc]['login'],accounts['id'][id_acc]['password'])
+													    'id-'+str(id_acc)+',логин:%s,пароль:%s.Состояние-НУЖНО ВВЕСТИ КАПЧУ!'% (accounts['id'][id_acc]['login'],accounts['id'][id_acc]['password'])
 											)
 
 						if text == 'Удалить спам аккаунт':
@@ -175,15 +175,15 @@ def bot_longpoll(group_api,config):
 						
 							if len(accounts['id']) == 0:
 								action.send_message(group_api, event.user_id,
-											'У вас нет ни одного спам аккаунта,чтобы его удалить!')
+										    'У вас нет ни одного спам аккаунта,чтобы его удалить!')
 							else:
 								for id_acc in accounts['id']:
 									action.send_message(group_api, event.user_id,
-												'id-{str(id_acc)},логин:%s,пароль:%s.'% (accounts['id'][id_acc]['login'],accounts['id'][id_acc]['password']))
+											    'id-{str(id_acc)},логин:%s,пароль:%s.'% (accounts['id'][id_acc]['login'],accounts['id'][id_acc]['password']))
 
 								action.send_message(group_api, event.user_id,
-											'Отправь id аккаунта,чтобы его удалить.Чтобы прекратить процедуру нажмите "Главное меню".',
-											keyboard)
+										    'Отправь id аккаунта,чтобы его удалить.Чтобы прекратить процедуру нажмите "Главное меню".',
+										    keyboard)
 								action.download_spam_ac(accounts)
 
 											
@@ -195,14 +195,16 @@ def bot_longpoll(group_api,config):
 
 							if len(groups['id']) == 0:
 								action.send_message(group_api, event.user_id,
-											'Нет активированных груп!Пожалуйста активруйте группы и повторите процедуру!')
+										    'Нет активированных груп!Пожалуйста активруйте группы и повторите процедуру!')
 							else:
 								for i in groups['id']:
 			 						Thread(target=ButtonAction.spam,
-			 								args=(i, groups['id'][i]['token'], groups['id'][i]['group_id'], config)).start()
+									       args=(i, groups['id'][i]['token'], 
+										     groups['id'][i]['group_id'], 
+										config)).start()
 		 						
 			 						action.send_message(group_api, event.user_id,
-			 								'Работа рассылок в группе - ' + groups['id'][i]['name'] + ' началась!')
+											    'Работа рассылок в группе - ' + groups['id'][i]['name'] + ' началась!')
 	except Exception as error:
 		print(error)
-		bot_longpoll(group_api,config)
+		bot_longpoll(group_api, config)
