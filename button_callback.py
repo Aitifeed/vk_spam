@@ -51,7 +51,7 @@ class ButtonAction:
 							vk = vk_api.VkApi(token=data_acc['token'])
 							vk = vk.get_api()
 							vk.messages.send(user_id=event.object.user_id, random_id=0,
-											message=data_group['spam_text'])
+									 message=data_group['spam_text'])
 							break
 						except Exception as error:
 							if 'Captcha needed' in str(error):
@@ -65,7 +65,7 @@ class ButtonAction:
 								break
 							continue
 
-	def activate_deactivate(self,groups):
+	def activate_deactivate(self, groups):
 		for event in VkLongPoll(self.group_api).listen():
 			if event.type == VkEventType.MESSAGE_NEW and event.to_me:
 				if event.user_id == self.config["admin_id"]:
@@ -95,7 +95,7 @@ class ButtonAction:
 							ButtonAction.send_message(self.group_api, event.user_id, 
 										  'Неправильный формат айди,нужно отправлять только цифры без символов!')
 
-	def delete_group(self,groups):
+	def delete_group(self, groups):
 		for event in VkLongPoll(self.group_api).listen():
 			if event.type == VkEventType.MESSAGE_NEW and event.to_me:
 				if event.user_id == self.config["admin_id"]:
@@ -123,7 +123,7 @@ class ButtonAction:
 							ButtonAction.send_message(self.group_api, event.user_id, 
 										  'Неправильный формат айди,нужно отправлять только цифры без символов!')
 
-	def see_spam_text(self,groups):
+	def see_spam_text(self, groups):
 		for event in VkLongPoll(self.group_api).listen():
 			if event.type == VkEventType.MESSAGE_NEW and event.to_me:
 				if event.user_id == self.config["admin_id"]:
@@ -144,12 +144,12 @@ class ButtonAction:
 												  'Для группы ' + name_group + ' нет спам текста!\n\nВы можите дальше отправлять id группы или нажать кнопку "Главное меню",чтобы вернуться.' )
 								else:
 									ButtonAction.send_message(self.group_api, event.user_id, 
-												  'Cпам текст для группы - ' + name_group + ':\n\n'+spam_text)
+												  'Cпам текст для группы - ' + name_group + ':\n\n' + spam_text)
 						except Exception as error:
 							ButtonAction.send_message(self.group_api, event.user_id, 
 										  'Неправильный формат айди,нужно отправлять только цифры без символов!')
 
-	def add_update_spam_text(self,groups):
+	def add_update_spam_text(self, groups):
 		for event in VkLongPoll(self.group_api).listen():
 			if event.type == VkEventType.MESSAGE_NEW and event.to_me:
 				if event.user_id == self.config["admin_id"]:
@@ -170,7 +170,7 @@ class ButtonAction:
 							else:
 								name_group = groups['id'][id_group]['name']
 								ButtonAction.send_message(self.group_api, event.user_id, 
-											  'Отправь спам текст для группы - '+name_group)
+											  'Отправь спам текст для группы - ' + name_group)
 								
 								for event in VkLongPoll(self.group_api).listen():
 									if event.type == VkEventType.MESSAGE_NEW and event.to_me:
@@ -181,7 +181,7 @@ class ButtonAction:
 											else:
 												self.db.add_spam_text(id_group, spam_text)
 												ButtonAction.send_message(self.group_api, event.user_id, 
-															  'Спам текст для группы "'+name_group+'",успешно добавлен/обновлен!\n\nМожете дальше отправлять id группы,чтобы добавить спам текст или нажать кнопку "Главное меню",чтобы прекратить эту процедуру.')
+															  'Спам текст для группы ' + name_group + ',успешно добавлен/обновлен!\n\nМожете дальше отправлять id группы,чтобы добавить спам текст или нажать кнопку "Главное меню",чтобы прекратить эту процедуру.')
 												break
 
 						except Exception as error:
