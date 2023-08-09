@@ -1,7 +1,6 @@
 from vk_api.keyboard import VkKeyboard,VkKeyboardColor
 
 def keyboards():
-	print('keyboard')
 	keyboard = VkKeyboard()
 	keyboard.add_button('Начать работу', VkKeyboardColor.NEGATIVE)	
 	keyboard.add_button('Активировать/деактивировать группу', VkKeyboardColor.NEGATIVE)
