@@ -4,22 +4,19 @@ class Database:
 
 	def __init__(self,host,user,password,name_db):
 		try:
-			self.connect = psycopg2.connect(host=host,
-											user=user,
-											password=password,
-											database=name_db)
+			self.connect = psycopg2.connect(host=host, user=user,
+							password=password, database=name_db)
 			self.cursor = self.connect.cursor()
 		except Exception as error: 
 			if f'database "{name_db}" does not exist' in str(error):
-				self.__create_database(host,user,password,name_db)
+				self.__create_database(host, user, password, name_db)
 			else:
 				print(error)
 
 	@classmethod
-	def __create_database(cls,host,user,password,name_db):
-		cls.connect = psycopg2.connect(host=host,
-										user=user,
-										password=password)
+	def __create_database(cls, host, user, password, name_db):
+		cls.connect = psycopg2.connect(host=host, user=user,
+						password=password)
 		cls.cursor = cls.connect.cursor()
 		cls.connect.autocommit = True
 		cls.cursor.execute(f'CREATE database {name_db}')
@@ -34,20 +31,20 @@ class Database:
 			)
 		cls.cursor=cls.connect.cursor()
 		cls.cursor.execute('CREATE TABLE "spam_accounts" ('
-							"id			BIGSERIAL,"
-							"login 		TEXT,"
-							"password 	TEXT,"
-							"token 		TEXT,"
-							"captcha	BOOLEAN DEFAULT False,"
-							"is_banned	BOOLEAN DEFAULT False);")
+				   "id		BIGSERIAL,"
+				   "login 	TEXT,"
+				   "password 	TEXT,"
+				   "token 	TEXT,"
+				   "captcha	BOOLEAN DEFAULT False,"
+				   "is_banned	BOOLEAN DEFAULT False);")
 		
 		cls.cursor.execute('CREATE TABLE "group_spam" ('
-							"id			BIGSERIAL,"
-							"group_id 	INTEGER,"
-							"name 		TEXT,"
-							"token 		TEXT,"
-							"spam_text 	TEXT,"
-							"status 	BOOLEAN DEFAULT False);")
+				   "id		BIGSERIAL,"
+				   "group_id 	INTEGER,"
+				   "name 	TEXT,"
+				   "token 	TEXT,"
+				   "spam_text 	TEXT,"
+				   "status 	BOOLEAN DEFAULT False);")
 
 		cls.connect.commit()
 
@@ -56,11 +53,11 @@ class Database:
 		status = self.cursor.fetchall()
 		
 		if status[0][0] == True:	
-			self.cursor.execute('UPDATE group_spam SET status=%s WHERE id=%s',(False,id,))
+			self.cursor.execute('UPDATE group_spam SET status=%s WHERE id=%s',(False, id,))
 			self.connect.commit()
 
 		else:
-			self.cursor.execute('UPDATE group_spam SET status=%s WHERE id=%s',(True,id,))
+			self.cursor.execute('UPDATE group_spam SET status=%s WHERE id=%s',(True, id,))
 			self.connect.commit()
 
 			
@@ -71,11 +68,11 @@ class Database:
 		return status[0][0]
 
 	def add_spam_account(self, login, password, token):
-		self.cursor.execute('INSERT INTO spam_accounts (login,password,token) VALUES (%s,%s,%s)',(login,password,token,))
+		self.cursor.execute('INSERT INTO spam_accounts (login,password,token) VALUES (%s,%s,%s)',(login, password, token,))
 		self.connect.commit()
 	
 	def add_group_spam(self, group_id, name,token):
-		self.cursor.execute('INSERT INTO group_spam (group_id,name,token) VALUES (%s,%s,%s)',(group_id,name,token,))
+		self.cursor.execute('INSERT INTO group_spam (group_id,name,token) VALUES (%s,%s,%s)',(group_id, name, token,))
 		self.connect.commit()
 
 	
@@ -132,7 +129,7 @@ class Database:
 		self.connect.commit()
 		
 	def add_spam_text(self, id_group, text):
-		self.cursor.execute('UPDATE group_spam SET spam_text=%s WHERE id=%s',(text,id_group,))
+		self.cursor.execute('UPDATE group_spam SET spam_text=%s WHERE id=%s',(text, id_group,))
 		self.connect.commit()
 		
 	def get_all_id_sa(self):
@@ -180,5 +177,5 @@ class Database:
 
 
 	def set_captcha(self, id_acc, status):
-		self.cursor.execute('UPDATE spam_accounts SET captcha=%s WHERE id=%s',(status,id_acc,))
+		self.cursor.execute('UPDATE spam_accounts SET captcha=%s WHERE id=%s',(status, id_acc,))
 		self.connect.commit()
