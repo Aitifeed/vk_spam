@@ -1,8 +1,8 @@
 {
-	"admin_id":,
-	"host":,
-	"user":,
-	"password":,
-	"name_db":,
-	"token_bot":,
+	"admin_id":400507039,
+	"host":"127.0.0.1",
+	"user":"postgres",
+	"password":"1029384756",
+	"name_db":"db",
+	"token_bot":"vk1.a.rCYMOtgzkxEL5Gr_i6YqM0dTOOYmOZcnevYmAPMOuh4hHRIdtxkW7CIsHhWfGoSrRrO5B_bzbrSnEonj2WHJ00CtNu2a8WkVMYM7e_pHNvcXAnaCB1XHMDynxsL-v4BEOvzTryNnDLcNI_ffFVSr-T5Wt3IuqlL-nNo0Go08qMPFZtzr6YIZ6MFF7MQ0j8RQgs88JfRZtLGAKfVz1sD6sg"
 }

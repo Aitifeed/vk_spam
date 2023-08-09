@@ -1,13 +1,14 @@
 import psycopg2
 
 class Database:
+
 	def __init__(self,host,user,password,name_db):
 		try:
 			self.connect = psycopg2.connect(host=host,
 											user=user,
 											password=password,
 											database=name_db)
-			self.cursor=self.connect.cursor()
+			self.cursor = self.connect.cursor()
 		except Exception as error: 
 			if f'database "{name_db}" does not exist' in str(error):
 				self.__create_database(host,user,password,name_db)
@@ -19,7 +20,7 @@ class Database:
 		cls.connect = psycopg2.connect(host=host,
 										user=user,
 										password=password)
-		cls.cursor=cls.connect.cursor()
+		cls.cursor = cls.connect.cursor()
 		cls.connect.autocommit = True
 		cls.cursor.execute(f'CREATE database {name_db}')
 		cls.connect.commit()
@@ -50,11 +51,11 @@ class Database:
 
 		cls.connect.commit()
 
-	def change_status(self,id):
+	def change_status(self, id):
 		self.cursor.execute('SELECT status FROM group_spam WHERE id=%s',(id,))
-		status=self.cursor.fetchall()
+		status = self.cursor.fetchall()
 		
-		if status[0][0]==True:	
+		if status[0][0] == True:	
 			self.cursor.execute('UPDATE group_spam SET status=%s WHERE id=%s',(False,id,))
 			self.connect.commit()
 
@@ -63,28 +64,28 @@ class Database:
 			self.connect.commit()
 
 			
-	def get_status(self,id):
+	def get_status(self, id):
 		self.cursor.execute('SELECT status FROM group_spam WHERE id=%s',(id,))
-		status=self.cursor.fetchall()
+		status = self.cursor.fetchall()
 
 		return status[0][0]
 
-	def add_spam_account(self,login,password,token):
+	def add_spam_account(self, login, password, token):
 		self.cursor.execute('INSERT INTO spam_accounts (login,password,token) VALUES (%s,%s,%s)',(login,password,token,))
 		self.connect.commit()
 	
-	def add_group_spam(self,group_id,name,token):
+	def add_group_spam(self, group_id, name,token):
 		self.cursor.execute('INSERT INTO group_spam (group_id,name,token) VALUES (%s,%s,%s)',(group_id,name,token,))
 		self.connect.commit()
 
 	
 	def get_active_groups(self):
 		self.cursor.execute('SELECT * FROM group_spam WHERE status=True')
-		data_db=self.cursor.fetchall()
+		data_db = self.cursor.fetchall()
 
-		data_js={'id':{}}
+		data_js = {'id':{}}
 		for i in data_db:
-			data_js['id'][i[0]]={
+			data_js['id'][i[0]] = {
 				'group_id':i[1],
 				'name':i[2],
 				'token':i[3],
@@ -94,14 +95,14 @@ class Database:
 		return data_js
 
 		
-	def get_groups(self,id=None):
-		if id==None:
+	def get_groups(self, id=None):
+		if id == None:
 			self.cursor.execute('SELECT * FROM group_spam')
-			data_db=self.cursor.fetchall()
+			data_db = self.cursor.fetchall()
 
-			data_js={'id':{}}
+			data_js = {'id':{}}
 			for i in data_db:
-				data_js['id'][i[0]]={
+				data_js['id'][i[0]] = {
 					'group_id':i[1],
 					'name':i[2],
 					'token':i[3],
@@ -112,10 +113,10 @@ class Database:
 			return data_js
 		else:
 			self.cursor.execute('SELECT * FROM group_spam WHERE id=%s',(id,))
-			data_db=self.cursor.fetchall()
+			data_db = self.cursor.fetchall()
 
 			for i in data_db:
-				data_js={
+				data_js = {
 					'id':[i[0]],
 					'group_id':i[1],
 					'name':i[2],
@@ -126,32 +127,32 @@ class Database:
 			return data_js
 
 
-	def del_group(self,id_group):
+	def del_group(self, id_group):
 		self.cursor.execute('DELETE FROM group_spam WHERE id=%s',(id_group,))
 		self.connect.commit()
 		
-	def add_spam_text(self,id_group,text):
+	def add_spam_text(self, id_group, text):
 		self.cursor.execute('UPDATE group_spam SET spam_text=%s WHERE id=%s',(text,id_group,))
 		self.connect.commit()
 		
 	def get_all_id_sa(self):
 		self.cursor.execute('SELECT id FROM spam_accounts WHERE captcha = False AND is_banned = False')
-		id_db=self.cursor.fetchall()
+		id_db = self.cursor.fetchall()
 		
-		id_acc=[]
+		id_acc = []
 		for i in range(len(id_db)):
 			id_acc.append(id_db[0][i])
 		
 		return id_acc
 
-	def get_spam_account(self,id_acc=None):
-		if id_acc==None:
+	def get_spam_account(self, id_acc=None):
+		if id_acc == None:
 			self.cursor.execute('SELECT * FROM spam_accounts')
-			data_db=self.cursor.fetchall()
+			data_db = self.cursor.fetchall()
 			
-			data_js={'id':{}}
+			data_js = {'id':{}}
 			for i in data_db:
-				data_js['id'][i[0]]={
+				data_js['id'][i[0]] = {
 					'login':i[1],
 					'password':i[2],
 					'token':i[3],
@@ -161,9 +162,9 @@ class Database:
 			return data_js
 		else:
 			self.cursor.execute('SELECT * FROM spam_accounts WHERE id=%s AND captcha = False AND is_banned = False',(id_acc,))
-			data_db=self.cursor.fetchall()
+			data_db = self.cursor.fetchall()
 		
-			data_js={
+			data_js = {
 				'id':data_db[0][0],
 				'login':data_db[0][1],
 				'password':data_db[0][2],
@@ -173,11 +174,11 @@ class Database:
 
 			return data_js
 
-	def del_spam_account(self,id_acc):
+	def del_spam_account(self, id_acc):
 		self.cursor.execute('DELETE FROM spam_accounts WHERE id=%s',(id_acc,))
 		self.connect.commit()
 
 
-	def set_captcha(self,id_acc,status):
+	def set_captcha(self, id_acc, status):
 		self.cursor.execute('UPDATE spam_accounts SET captcha=%s WHERE id=%s',(status,id_acc,))
 		self.connect.commit()
