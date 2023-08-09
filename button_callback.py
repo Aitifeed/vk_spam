@@ -76,7 +76,8 @@ class ButtonAction:
 						try:
 							id_group = int(text)
 							if id_group not in groups['id']:
-								ButtonAction.send_message(self.group_api, event.user_id, 'Такого айди нет!\nПожалуйста внимательно посмотрите на id в списке групп и отправьте правильный id!')
+								ButtonAction.send_message(self.group_api, event.user_id, 
+											  'Такого айди нет!\nПожалуйста внимательно посмотрите на id в списке групп и отправьте правильный id!')
 							else:
 								#Меняем статус группы в бд и отправляем сообещние о статусе группы
 								self.db.change_status(id_group)
@@ -85,11 +86,14 @@ class ButtonAction:
 								status = self.db.get_status(id_group)
 
 								if status == True:
-									ButtonAction.send_message(self.group_api, event.user_id, 'Группа - ' + name_group + ',успешно активированна!\nМожете дальше отправлять id,чтобы активировать/деактивировать группы или нажать "Главное меню",чтобы прекратить процедуру.')						
+									ButtonAction.send_message(self.group_api, event.user_id, 
+												  'Группа - ' + name_group + ',успешно активированна!\nМожете дальше отправлять id,чтобы активировать/деактивировать группы или нажать "Главное меню",чтобы прекратить процедуру.')						
 								else:
-									ButtonAction.send_message(self.group_api, event.user_id, 'Группа - ' + name_group + ',успешно деактивированна!\nМожете дальше отправлять id,чтобы активировать/деактивировать группы или нажать "Главное меню",чтобы прекратить процедуру.')						
+									ButtonAction.send_message(self.group_api, event.user_id, 
+												  'Группа - ' + name_group + ',успешно деактивированна!\nМожете дальше отправлять id,чтобы активировать/деактивировать группы или нажать "Главное меню",чтобы прекратить процедуру.')						
 						except:
-							ButtonAction.send_message(self.group_api, event.user_id, 'Неправильный формат айди,нужно отправлять только цифры без символов!')
+							ButtonAction.send_message(self.group_api, event.user_id, 
+										  'Неправильный формат айди,нужно отправлять только цифры без символов!')
 
 	def delete_group(self,groups):
 		for event in VkLongPoll(self.group_api).listen():
@@ -102,18 +106,22 @@ class ButtonAction:
 						try:
 							id_group = int(text)
 							if id_group not in groups['id']:
-								ButtonAction.send_message(self.group_api, event.user_id, 'Такого айди нет!\nПожалуйста внимательно посмотрите на id в списке групп и отправьте правильный id!')
+								ButtonAction.send_message(self.group_api, event.user_id, 
+											  'Такого айди нет!\nПожалуйста внимательно посмотрите на id в списке групп и отправьте правильный id!')
 							else:
 								self.db.del_group(id_group)
 								name_group = groups['id'][id_group]['name']
 								data_group = self.db.get_groups()
 								if len(data_group['id']) == 0:
-									ButtonAction.send_message(self.group_api, event.user_id, 'Группа - ' + name_group + ',успешно удалена!')
+									ButtonAction.send_message(self.group_api, event.user_id, 
+												  'Группа - ' + name_group + ',успешно удалена!')
 									return
 								else:
-									ButtonAction.send_message(self.group_api, event.user_id, 'Группа - ' + name_group + ',успешно удалена!\nМожете дальше отправлять id,чтобы удалять группы или нажать "Главное меню",чтобы прекратить процедуру удаления.')
+									ButtonAction.send_message(self.group_api, event.user_id, 
+												  'Группа - ' + name_group + ',успешно удалена!\nМожете дальше отправлять id,чтобы удалять группы или нажать "Главное меню",чтобы прекратить процедуру удаления.')
 						except:
-							ButtonAction.send_message(self.group_api, event.user_id, 'Неправильный формат айди,нужно отправлять только цифры без символов!')
+							ButtonAction.send_message(self.group_api, event.user_id, 
+										  'Неправильный формат айди,нужно отправлять только цифры без символов!')
 
 	def see_spam_text(self,groups):
 		for event in VkLongPoll(self.group_api).listen():
@@ -126,16 +134,20 @@ class ButtonAction:
 						try:
 							id_group = int(text)
 							if id_group not in groups['id']:
-								ButtonAction.send_message(self.group_api, event.user_id, 'Такого айди нет!\nПожалуйста внимательно посмотрите на id в списке групп и отправьте правильный id!')
+								ButtonAction.send_message(self.group_api, event.user_id,
+											  'Такого айди нет!\nПожалуйста внимательно посмотрите на id в списке групп и отправьте правильный id!')
 							else:
 								spam_text = groups['id'][id_group]['spam_text']
 								name_group = groups['id'][id_group]['name']
 								if spam_text == None:
-									ButtonAction.send_message(self.group_api, event.user_id, 'Для группы ' + name_group + ' нет спам текста!\n\nВы можите дальше отправлять id группы или нажать кнопку "Главное меню",чтобы вернуться.' )
+									ButtonAction.send_message(self.group_api, event.user_id, 
+												  'Для группы ' + name_group + ' нет спам текста!\n\nВы можите дальше отправлять id группы или нажать кнопку "Главное меню",чтобы вернуться.' )
 								else:
-									ButtonAction.send_message(self.group_api, event.user_id, 'Cпам текст для группы - ' + name_group + ':\n\n'+spam_text)
+									ButtonAction.send_message(self.group_api, event.user_id, 
+												  'Cпам текст для группы - ' + name_group + ':\n\n'+spam_text)
 						except Exception as error:
-							ButtonAction.send_message(self.group_api, event.user_id, 'Неправильный формат айди,нужно отправлять только цифры без символов!')
+							ButtonAction.send_message(self.group_api, event.user_id, 
+										  'Неправильный формат айди,нужно отправлять только цифры без символов!')
 
 	def add_update_spam_text(self,groups):
 		for event in VkLongPoll(self.group_api).listen():
@@ -153,10 +165,12 @@ class ButtonAction:
 						try:
 							id_group = int(event.text)
 							if id_group not in groups['id']:
-								ButtonAction.send_message(self.group_api, event.user_id, 'Такого айди нет!\nПожалуйста внимательно посмотрите на id в списке групп и отправьте правильный id.')	
+								ButtonAction.send_message(self.group_api, event.user_id, 
+											  'Такого айди нет!\nПожалуйста внимательно посмотрите на id в списке групп и отправьте правильный id.')	
 							else:
 								name_group = groups['id'][id_group]['name']
-								ButtonAction.send_message(self.group_api, event.user_id, 'Отправь спам текст для группы - '+name_group)
+								ButtonAction.send_message(self.group_api, event.user_id, 
+											  'Отправь спам текст для группы - '+name_group)
 								
 								for event in VkLongPoll(self.group_api).listen():
 									if event.type == VkEventType.MESSAGE_NEW and event.to_me:
@@ -166,12 +180,14 @@ class ButtonAction:
 												return
 											else:
 												self.db.add_spam_text(id_group, spam_text)
-												ButtonAction.send_message(self.group_api, event.user_id, 'Спам текст для группы "'+name_group+'",успешно добавлен/обновлен!\n\nМожете дальше отправлять id группы,чтобы добавить спам текст или нажать кнопку "Главное меню",чтобы прекратить эту процедуру.')
+												ButtonAction.send_message(self.group_api, event.user_id, 
+															  'Спам текст для группы "'+name_group+'",успешно добавлен/обновлен!\n\nМожете дальше отправлять id группы,чтобы добавить спам текст или нажать кнопку "Главное меню",чтобы прекратить эту процедуру.')
 												break
 
 						except Exception as error:
 							print(error)
-							ButtonAction.send_message(self.group_api, event.user_id, 'Неправильный формат айди,нужно отправлять только цифры без символов!')
+							ButtonAction.send_message(self.group_api, event.user_id, 
+										  'Неправильный формат айди,нужно отправлять только цифры без символов!')
 
 	def load_group(self):
 		for event in VkLongPoll(self.group_api).listen():
@@ -188,11 +204,13 @@ class ButtonAction:
 									
 							self.db.add_group_spam(data[0]['id'], data[0]['name'], event.text)
 
-							ButtonAction.send_message(self.group_api, event.user_id, 'Группа:' + data[0]['name'] + ' успешно загружена!\n\nМожете дальше отправлять токен другой группы,чтобы ее загрузить или нажать "Главное меню",чтобы отменить процедуру загрузки групп.')
+							ButtonAction.send_message(self.group_api, event.user_id, 
+										  'Группа:' + data[0]['name'] + ' успешно загружена!\n\nМожете дальше отправлять токен другой группы,чтобы ее загрузить или нажать "Главное меню",чтобы отменить процедуру загрузки групп.')
 
 						except Exception as error:
 							print(error)
-							ButtonAction.send_message(self.group_api, event.user_id, 'Неправильный токен!Возможно вы допустили ошибку добавив какой-нибудь символ или проблел.\n\nПожалуйста отправьте коректный токен!\n\nЧтобы прекратить процедуру загрузки групп,нажмите на кнопку "Главное меню".')
+							ButtonAction.send_message(self.group_api, event.user_id, 
+										  'Неправильный токен!Возможно вы допустили ошибку добавив какой-нибудь символ или проблел.\n\nПожалуйста отправьте коректный токен!\n\nЧтобы прекратить процедуру загрузки групп,нажмите на кнопку "Главное меню".')
 
 	def load_spam_ac(self):
 		for event in VkLongPoll(self.group_api).listen():
@@ -207,7 +225,8 @@ class ButtonAction:
 						token = data.find('token')
 					
 						if log == -1 or pas == -1 or token == -1:
-							ButtonAction.send_message(self.group_api, event.user_id, 'Неправильный формат для загрузки данных!Возможно вы где то ошиблись.\nФормат данных должен быть без пробелов в такой форме - log:логин,pass:пароль,token:токен')
+							ButtonAction.send_message(self.group_api, event.user_id, 
+										  'Неправильный формат для загрузки данных!Возможно вы где то ошиблись.\nФормат данных должен быть без пробелов в такой форме - log:логин,pass:пароль,token:токен')
 							continue
 
 						log = data[log+4:pas-1]
@@ -222,14 +241,17 @@ class ButtonAction:
 											
 							self.db.add_spam_account(log, pas, token)
 										
-							ButtonAction.send_message(self.group_api, event.user_id, 'Данные аккаунта успешно загружены\\n Можете дальше отправлять данные аккаунта.Чтобы прекратить процедуру нажмите "Главное меню"')
+							ButtonAction.send_message(self.group_api, event.user_id, 
+										  'Данные аккаунта успешно загружены\\n Можете дальше отправлять данные аккаунта.Чтобы прекратить процедуру нажмите "Главное меню"')
 						except Exception as error:
 							print(error)
 							if 'invalid access_token' in str(error):				
-								ButtonAction.send_message(self.group_api, event.user_id, 'Неправильный токен! Пожалуйста проверьте правльность токена и повторить процедуру!')
+								ButtonAction.send_message(self.group_api, event.user_id, 
+											  'Неправильный токен! Пожалуйста проверьте правльность токена и повторить процедуру!')
 						
 							if 'user is blocked' in str(error):
-								ButtonAction.send_message(self.group_api, event.user_id, 'Данный аккаунт заблокирован!')
+								ButtonAction.send_message(self.group_api, event.user_id, 
+											  'Данный аккаунт заблокирован!')
 
 	def download_spam_ac(self,accounts):
 		for event in VkLongPoll(self.group_api).listen():
@@ -241,10 +263,13 @@ class ButtonAction:
 						try:
 							id_acc = int(event.text)
 							if id_acc not in accounts['id']:
-								ButtonAction.send_message(self.group_api, event.user_id, 'Аккаунтов под id-' + str(id_acc) + ' нет!Внимательно смотрите на список id спам аккаунтов!')
+								ButtonAction.send_message(self.group_api, event.user_id, 
+											  'Аккаунтов под id-' + str(id_acc) + ' нет!Внимательно смотрите на список id спам аккаунтов!')
 							else:
 								self.db.del_spam_account(id_acc)
-								ButtonAction.send_message(self.group_api, event.user_id, 'Аккаунт под id-' + str(id_acc) + ' успешно удален!')
+								ButtonAction.send_message(self.group_api, event.user_id, 
+											  'Аккаунт под id-' + str(id_acc) + ' успешно удален!')
 
 						except:
-							ButtonAction.send_message(self.group_api, event.user_id, 'Не могу найти такой id,возможно вы ошиблись.\nОтправьте коректный id!')
+							ButtonAction.send_message(self.group_api, event.user_id, 
+										  'Не могу найти такой id,возможно вы ошиблись.\nОтправьте коректный id!')
