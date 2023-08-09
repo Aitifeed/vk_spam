@@ -7,4 +7,4 @@ with open ("config.json") as f:
 
 if __name__=="__main__":
 	group_api = vk_api.VkApi(token=config["token_bot"])
-	bot_longpoll(group_api,config)
+	bot_longpoll(group_api, config)
